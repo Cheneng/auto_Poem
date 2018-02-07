@@ -12,8 +12,6 @@ import argparse
 
 torch.manual_seed(123)
 
-
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--word_embedding', type=int, default=100)
@@ -58,8 +56,12 @@ for epoch in range(config.epoch):
     for step, x in enumerate(DataIter):
 
         # Training data & Labels
-        train_set = autograd.Variable(x[:, 1:])
-        labels = autograd.Variable(x[:, :-1]).contiguous().view(-1)
+        if torch.cuda.is_available():
+            train_set = autograd.Variable(x[:, 1:]).cuda()
+            labels = autograd.Variable(x[:, :-1]).contiguous().view(-1).cuda()
+        else:
+            train_set = autograd.Variable(x[:, 1:])
+            labels = autograd.Variable(x[:, :-1]).contiguous().view(-1)
 
         out = model(train_set)
         out = out.view(-1, config.dict_size)
@@ -73,8 +75,7 @@ for epoch in range(config.epoch):
 
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
-            print(model.generating_acrostic_poetry('黄总牛逼', Data))
-            print(model.generating_acrostic_poetry('龙眼爆世强', Data))
+            print(model.generating_acrostic_poetry('森哥牛逼', Data))
 
     torch.save(model.state_dict(), args.check_path+str(epoch)+'.ckpt')
 
