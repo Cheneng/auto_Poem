@@ -85,8 +85,7 @@ class PoemGenerator(nn.Module):
         char_version = []
         for line in output_list:
             line_temp = [helper.id2word[word] for word in line]
-            char_version.append(line_temp)
-
+            char_version.append(''.join(line_temp))
 
         return char_version
 

@@ -45,12 +45,11 @@ model = PoemGenerator(dict_size=config.dict_size,
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
     Data = PoemDataset(config.training_set, cuda=True)
-    DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size,
-                               pin_memory=True, shuffle=True)
     model = model.cuda()
 else:
     Data = PoemDataset(config.training_set)
-    DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
+
+DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=config.lr)
