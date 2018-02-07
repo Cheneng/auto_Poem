@@ -74,14 +74,18 @@ class PoemGenerator(nn.Module):
                     out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1).cuda()
                 else:
                     out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1)
-                    
+
                 out = self.forward(out)
 
                 _, word_index = out.max(2)
                 out = word_index
 
                 # to integer version
-                word_index = word_index.data.view(-1).numpy().tolist()
+                if torch.cuda.is_available():
+                    word_index = word_index.data.view(-1).cpu().numpy().tolist()
+                else:
+                    word_index = word_index.data.view(-1).numpy().tolist()
+
                 output_list_temp.extend(word_index)
 
             output_list.append(output_list_temp)
