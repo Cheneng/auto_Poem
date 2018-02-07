@@ -86,9 +86,10 @@ for epoch in range(config.epoch):
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
             #print(model.generating_acrostic_poetry('森哥牛逼', Data))
-            print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
+
 
     torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
+    print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
     with open('data/loss.pkl', 'wb') as f:
         pickle.dump(loss_list, f)
