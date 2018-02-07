@@ -61,11 +61,14 @@ for epoch in range(config.epoch):
 
         # Training data & Labels
         if torch.cuda.is_available():
-            train_set = autograd.Variable(x[:, 1:]).cuda()
-            labels = autograd.Variable(x[:, :-1]).contiguous().view(-1).cuda()
+            train_set = x[:, 1:].cuda()
+            labels = x[:, :-1].contiguous().view(-1).cuda()
         else:
-            train_set = autograd.Variable(x[:, 1:])
-            labels = autograd.Variable(x[:, :-1]).contiguous().view(-1)
+            train_set = x[:, 1:]
+            labels = x[:, :-1].contiguous().view(-1)
+
+        train_set = autograd.Variable(train_set)
+        labels = autograd.Variable(labels)
 
         out = model(train_set)
         out = out.view(-1, config.dict_size)
@@ -79,7 +82,7 @@ for epoch in range(config.epoch):
 
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
-            print(model.generating_acrostic_poetry('森哥牛逼', Data))
+            #print(model.generating_acrostic_poetry('森哥牛逼', Data))
             print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
     torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
