@@ -55,7 +55,7 @@ else:
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=config.lr)
+optimizer = optim.Adam(model.parameters(), lr=config.lr)
 
 loss_list = []
 
