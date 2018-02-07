@@ -13,6 +13,9 @@ import pickle
 
 torch.manual_seed(123)
 
+# 显存泄露的时候使用下面语句
+torch.backends.cudnn.enabled = False
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--word_embedding', type=int, default=100)
