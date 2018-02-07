@@ -70,7 +70,11 @@ class PoemGenerator(nn.Module):
 
             while count < max_len-1:
                 count += 1
-                out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1)
+                if torch.cuda.is_available():
+                    out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1).cuda()
+                else:
+                    out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1)
+                    
                 out = self.forward(out)
 
                 _, word_index = out.max(2)
