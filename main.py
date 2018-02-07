@@ -9,6 +9,7 @@ from Model import PoemGenerator
 from config import Config
 from data import PoemDataset
 import argparse
+import pickle
 
 torch.manual_seed(123)
 
@@ -53,6 +54,8 @@ else:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=config.lr)
 
+loss_list = []
+
 for epoch in range(config.epoch):
     for step, x in enumerate(DataIter):
 
@@ -68,7 +71,7 @@ for epoch in range(config.epoch):
         out = out.view(-1, config.dict_size)
 
         loss = criterion(out, labels)
-
+        loss_list.append(loss)
         # backward and optimize
         optimizer.zero_grad()
         loss.backward()
@@ -77,6 +80,10 @@ for epoch in range(config.epoch):
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
             print(model.generating_acrostic_poetry('森哥牛逼', Data))
+            print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
     torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
+
+    with open('data/loss.pkl', 'wb') as f:
+        pickle.dump(loss_list, f)
 
