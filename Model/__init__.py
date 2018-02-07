@@ -1,1 +1,1 @@
-from .Model import Poem
+from .Model import PoemGenerator
