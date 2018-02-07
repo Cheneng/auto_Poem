@@ -14,8 +14,6 @@ class PoemDataset(Dataset):
         datas = np.load(file_path)
 
         self.poems = torch.from_numpy(datas['data']).long()
-        if cuda:
-            self.poems = self.poems.cuda()
         self.id2word = datas['ix2word'].item()
         self.word2id = datas['word2ix'].item()
 

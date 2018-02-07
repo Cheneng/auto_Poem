@@ -44,10 +44,11 @@ if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
     Data = PoemDataset(config.training_set, cuda=True)
     model = model.cuda()
+    DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True, pin_memory=True)
+
 else:
     Data = PoemDataset(config.training_set)
-
-DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
+    DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=config.lr)
