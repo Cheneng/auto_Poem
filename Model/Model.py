@@ -5,7 +5,7 @@ import torch.autograd as autograd
 import torch.nn as nn
 from data import PoemDataset
 
-torch.manual_seed(1)
+torch.manual_seed(21)
 
 
 class PoemGenerator(nn.Module):
@@ -37,11 +37,31 @@ class PoemGenerator(nn.Module):
             self.linear = nn.Linear(in_features=word_embedding,
                                     out_features=dict_size)
 
-    def forward(self, x):
+    def forward(self, x, hidden_state=None):
         x = self.embeds(x)
-        x, _ = self.lstm(x)
+        if hidden_state is not None:
+            x, _ = self.lstm(x, hidden_state)
+        else:
+            x, _ = self.lstm(x)
         x = self.linear(x)
         return x
+
+    def _generating_word_hidden(self, x, hidden_state=None):
+        """
+        用来生成诗句的方法，返回值中包括了
+        当前lstm的输出 out 和 (cell state, hidden state)可以用来传递给下一个数值
+
+        :param x:
+        :return:
+        """
+        x = self.embeds(x)
+        if hidden_state is not None:
+            x, hidden_state = self.lstm(x, hidden_state)
+        else:
+            x, hidden_state = self.lstm(x)
+        x = self.linear(x)
+
+        return x, hidden_state
 
     def generating_acrostic_poetry(self, poetry, helper=None, max_len=5):
         """
@@ -62,11 +82,17 @@ class PoemGenerator(nn.Module):
         # save the output
         output_list = []
 
-        for character in poetry_index:
-            count = 0
-            output_list_temp = [character]
+        start = autograd.Variable(torch.LongTensor([helper.word2id['<START>']])).view(1, -1)
 
+
+        for character in poetry_index:
+            # 计算一行输出的字个数
+            count = 0
+            # 记录这行的输出藏头诗
+            output_list_temp = [character]
+            # 藏头字
             word_index = character
+            _, hidden = self._generating_word_hidden(start)
 
             while count < max_len-1:
                 count += 1
@@ -75,7 +101,7 @@ class PoemGenerator(nn.Module):
                 else:
                     out = autograd.Variable(torch.LongTensor([word_index])).view(1, -1)
 
-                out = self.forward(out)
+                out, hidden = self._generating_word_hidden(out, hidden)
 
                 _, word_index = out.max(2)
                 out = word_index
@@ -109,6 +135,3 @@ if __name__ == '__main__':
     print(new_poem)
     print("new poem:", len(new_poem))
     print(type(new_poem))
-
-
-

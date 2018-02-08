@@ -49,4 +49,4 @@ if __name__ == '__main__':
     print(len(dataset))
     print(dataset.word2id)
     print(dataset.word2id['陈'])
-    print(dataset.word2id['诚'])
+    print(dataset.word2id['<START>'])
