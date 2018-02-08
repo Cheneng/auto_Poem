@@ -19,7 +19,7 @@ torch.backends.cudnn.enabled = False
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--word_embedding', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=2)
+parser.add_argument('--batch_size', type=int, default=10)
 parser.add_argument('--dict_size', type=int, default=8293)
 parser.add_argument('--training_path', type=str, default='./data/tang.npz')
 parser.add_argument('--gpu', type=int, default=1)
@@ -85,7 +85,6 @@ for epoch in range(config.epoch):
 
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
-            #print(model.generating_acrostic_poetry('森哥牛逼', Data))
 
     torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
     print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
