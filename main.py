@@ -13,7 +13,7 @@ import pickle
 
 torch.manual_seed(123)
 
-# 显存泄露的时候使用下面语句
+# 显存泄露的时候使用下面语句（PyTorch中LSTM的祖传BUG）
 torch.backends.cudnn.enabled = False
 
 parser = argparse.ArgumentParser()
@@ -35,7 +35,7 @@ config = Config(word_embedding=args.word_embedding,
                 dict_size=args.dict_size,
                 batch_first=True,
                 bidirectional=True,
-                training_set=args.training_path,
+                training_path=args.training_path,
                 batch_size=args.batch_size,
                 cuda=args.gpu,
                 epoch=args.epoch)
@@ -46,12 +46,12 @@ model = PoemGenerator(dict_size=config.dict_size,
 
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
-    Data = PoemDataset(config.training_set, cuda=True)
+    Data = PoemDataset(config.training_path, cuda=True)
     model = model.cuda()
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True, pin_memory=True)
 
 else:
-    Data = PoemDataset(config.training_set)
+    Data = PoemDataset(config.training_path)
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
 
 criterion = nn.CrossEntropyLoss()
@@ -64,11 +64,11 @@ for epoch in range(config.epoch):
 
         # Training data & Labels
         if torch.cuda.is_available():
-            train_set = x[:, 1:].cuda()
-            labels = x[:, :-1].contiguous().view(-1).cuda()
+            train_set = x[:, :-1].cuda()
+            labels = x[:, 1:].contiguous().view(-1).cuda()
         else:
-            train_set = x[:, 1:]
-            labels = x[:, :-1].contiguous().view(-1)
+            train_set = x[:, :-1]
+            labels = x[:, 1:].contiguous().view(-1)
 
         train_set = autograd.Variable(train_set)
         labels = autograd.Variable(labels)
@@ -85,9 +85,9 @@ for epoch in range(config.epoch):
 
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
+            print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
     torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
-    print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
     with open('data/loss.pkl', 'wb') as f:
         pickle.dump(loss_list, f)

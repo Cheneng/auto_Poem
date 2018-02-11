@@ -7,7 +7,7 @@ class Config(object):
                  dict_size=1000,
                  batch_first=True,
                  bidirectional=True,
-                 training_set='data/tang.npz',
+                 training_path='data/tang.npz',
                  batch_size=3,
                  epoch=2,
                  cuda=1,
@@ -16,7 +16,7 @@ class Config(object):
         self.dict_size = dict_size
         self.batch_first = batch_first
         self.bidirectional = bidirectional
-        self.training_set = training_set
+        self.training_path = training_path
         self.batch_size = batch_size
         self.epoch = epoch
         self.cuda = cuda

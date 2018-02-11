@@ -13,7 +13,7 @@ class PoemGenerator(nn.Module):
     Generating peom.
     """
     def __init__(self, word_embedding=100, dict_size=8293,
-                 batch_first=True, bidirectional=True):
+                 batch_first=True, bidirectional=True, model_path=None):
         super(PoemGenerator, self).__init__()
 
         self.input_size = word_embedding
@@ -83,7 +83,6 @@ class PoemGenerator(nn.Module):
         output_list = []
 
         start = autograd.Variable(torch.LongTensor([helper.word2id['<START>']])).view(1, -1)
-
 
         for character in poetry_index:
             # 计算一行输出的字个数
