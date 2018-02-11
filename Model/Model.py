@@ -50,15 +50,14 @@ class PoemGenerator(nn.Module):
         """
         用来生成诗句的方法，返回值中包括了
         当前lstm的输出 out 和 (cell state, hidden state)可以用来传递给下一个数值
-
-        :param x:
-        :return:
         """
         x = self.embeds(x)
+
         if hidden_state is not None:
             x, hidden_state = self.lstm(x, hidden_state)
         else:
             x, hidden_state = self.lstm(x)
+
         x = self.linear(x)
 
         return x, hidden_state
@@ -84,6 +83,11 @@ class PoemGenerator(nn.Module):
 
         start = autograd.Variable(torch.LongTensor([helper.word2id['<START>']])).view(1, -1)
 
+        if torch.cuda.is_available():
+            start = start.cuda()
+
+        _, hidden = self._generating_word_hidden(start)
+
         for character in poetry_index:
             # 计算一行输出的字个数
             count = 0
@@ -91,7 +95,6 @@ class PoemGenerator(nn.Module):
             output_list_temp = [character]
             # 藏头字
             word_index = character
-            _, hidden = self._generating_word_hidden(start)
 
             while count < max_len-1:
                 count += 1
