@@ -46,9 +46,11 @@ if __name__ == '__main__':
     DataIter = data.DataLoader(dataset=dataset,
                                batch_size=1,
                                shuffle=True)
-    for data in DataIter:
-        print('train:', data[:, :-1])
-        print('label:', data[:, 1:])
 
+    print(dataset[0])
+
+    # for data in DataIter:
+    #     print('train:', data[:, :-1])
+    #     print('label:', data[:, 1:])
 # label: 6212  8103  7909  6966  4666  7435  8290
 # train: 7066  6212  8103  7909  6966  4666  7435

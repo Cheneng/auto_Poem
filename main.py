@@ -5,7 +5,7 @@ import torch.autograd as autograd
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
-from Model import PoemGenerator
+from model import PoemGenerator
 from config import Config
 from data import PoemDataset
 import argparse

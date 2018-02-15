@@ -13,13 +13,13 @@ class PoemGenerator(nn.Module):
     Generating peom.
     """
     def __init__(self, word_embedding=100, dict_size=8293,
-                 batch_first=True, bidirectional=True, model_path=None):
+                 batch_first=True, bidirectional=True, padding_idx=8292):
         super(PoemGenerator, self).__init__()
 
         self.input_size = word_embedding
         self.hidden_size = word_embedding
         self.dict_size = dict_size
-        self.embeds = nn.Embedding(dict_size, word_embedding)
+        self.embeds = nn.Embedding(dict_size, word_embedding, padding_idx=padding_idx)
         self.batch_first = batch_first
         self.bidirectional = bidirectional
 
