@@ -27,6 +27,7 @@ parser.add_argument('--lr', type=float, default=0.1)
 parser.add_argument('--epoch', type=int, default=10)
 parser.add_argument('--check_path', type=str, default='./checkpoints/')
 parser.add_argument('--print_step', type=int, default=2, help='How many step then print the loss')
+parser.add_argument('--rnn', type=str, default='LSTM')
 
 args = parser.parse_args()
 
@@ -38,11 +39,13 @@ config = Config(word_embedding=args.word_embedding,
                 training_path=args.training_path,
                 batch_size=args.batch_size,
                 cuda=args.gpu,
-                epoch=args.epoch)
+                epoch=args.epoch,
+                rnn=args.rnn)
 
 model = PoemGenerator(dict_size=config.dict_size,
                       word_embedding=config.word_embedding,
-                      batch_first=True)
+                      batch_first=True,
+                      rnn=config.rnn)
 
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)

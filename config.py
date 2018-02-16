@@ -11,7 +11,8 @@ class Config(object):
                  batch_size=3,
                  epoch=2,
                  cuda=1,
-                 lr=0.1):
+                 lr=0.1,
+                 rnn='LSTM'):
         self.word_embedding = word_embedding
         self.dict_size = dict_size
         self.batch_first = batch_first
@@ -21,3 +22,4 @@ class Config(object):
         self.epoch = epoch
         self.cuda = cuda
         self.lr = lr
+        self.rnn = rnn

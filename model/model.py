@@ -13,7 +13,8 @@ class PoemGenerator(nn.Module):
     Generating peom.
     """
     def __init__(self, word_embedding=100, dict_size=8293,
-                 batch_first=True, bidirectional=True, padding_idx=8292):
+                 batch_first=True, bidirectional=True,
+                 padding_idx=8292, rnn='LSTM'):
         super(PoemGenerator, self).__init__()
 
         self.input_size = word_embedding
@@ -24,10 +25,17 @@ class PoemGenerator(nn.Module):
         self.bidirectional = bidirectional
 
         # Define the LSTM for generating words
-        self.lstm = nn.LSTM(input_size=self.input_size,
-                            hidden_size=self.hidden_size,
-                            batch_first=self.batch_first,
-                            bidirectional=self.bidirectional)
+        if rnn == 'LSTM':
+            self.lstm = nn.LSTM(input_size=self.input_size,
+                                hidden_size=self.hidden_size,
+                                batch_first=self.batch_first,
+                                bidirectional=self.bidirectional)
+        elif rnn == 'GRU':
+            self.lstm = nn.GRU(input_size=self.input_size,
+                               hidden_size=self.hidden_size,
+                               batch_first=self.batch_first,
+                               bidirectional=self.bidirectional)
+
         # Map
         #
         if self.bidirectional:
@@ -62,7 +70,7 @@ class PoemGenerator(nn.Module):
 
         return x, hidden_state
 
-    def generating_acrostic_poetry(self, poetry, helper=None, max_len=5):
+    def generating_acrostic_poetry(self, poetry, helper=None, max_len=20):
         """
         生成藏头诗
 
