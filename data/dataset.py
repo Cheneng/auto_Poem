@@ -9,7 +9,7 @@ class PoemDataset(Dataset):
     """
     The Poems dataset.
     """
-    def __init__(self, file_path='data/tang.npz', cuda=False):
+    def __init__(self, file_path='data/tang.npz'):
         super(PoemDataset, self).__init__()
         datas = np.load(file_path)
         self.poems = torch.from_numpy(datas['data']).long()

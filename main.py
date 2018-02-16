@@ -50,7 +50,7 @@ model = PoemGenerator(dict_size=config.dict_size,
 
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
-    Data = PoemDataset(config.training_path, cuda=True)
+    Data = PoemDataset(config.training_path)
     model = model.cuda()
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True, pin_memory=True)
 
@@ -74,8 +74,8 @@ for epoch in range(config.epoch):
             train_set = copy.deepcopy(x[:, :-1])
             labels = copy.deepcopy(x[:, 1:].contiguous().view(-1))
 
-        train_set = autograd.Variable(train_set)
-        labels = autograd.Variable(labels)
+        train_set = autograd.Variable(train_set, volatile=True)
+        labels = autograd.Variable(labels, volatile=True)
 
         out = model(train_set)
         out = out.view(-1, config.dict_size)
