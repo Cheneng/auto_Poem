@@ -14,7 +14,7 @@ import pickle
 torch.manual_seed(123)
 
 # 显存泄露的时候使用下面语句（PyTorch中LSTM的祖传BUG）
-torch.backends.cudnn.enabled = False
+#torch.backends.cudnn.enabled = False
 
 parser = argparse.ArgumentParser()
 
