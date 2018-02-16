@@ -74,8 +74,8 @@ for epoch in range(config.epoch):
             train_set = copy.deepcopy(x[:, :-1])
             labels = copy.deepcopy(x[:, 1:].contiguous().view(-1))
 
-        train_set = autograd.Variable(train_set, volatile=True)
-        labels = autograd.Variable(labels, volatile=True)
+        train_set = autograd.Variable(train_set)
+        labels = autograd.Variable(labels)
 
         out = model(train_set)
         out = out.view(-1, config.dict_size)
