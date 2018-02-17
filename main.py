@@ -88,7 +88,7 @@ for epoch in range(config.epoch):
         loss_list.append(loss)
         # backward and optimize
         optimizer.zero_grad()
-        loss.backward(retain_graph=True)
+        loss.backward()
         optimizer.step()
 
         if step % args.print_step == 0:
