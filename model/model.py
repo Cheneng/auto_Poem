@@ -70,7 +70,7 @@ class PoemGenerator(nn.Module):
 
         return x, hidden_state
 
-    def generating_acrostic_poetry(self, poetry, helper=None, max_len=20):
+    def generating_acrostic_poetry(self, poetry, helper=None, max_len=7):
         """
         生成藏头诗
 
@@ -115,7 +115,10 @@ class PoemGenerator(nn.Module):
 
                 #_, word_index = out.max(2)
 
-                num_list = out.data.numpy().squeeze().tolist()
+                if torch.cuda.is_available():
+                    num_list = out.data.cpu().numpy().squeeze().tolist()
+                else:
+                    num_list = out.data.numpy().squeeze().tolist()
 
                 sort_out = sorted(num_list, reverse=True)
                 #print(sort_out)
