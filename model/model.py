@@ -89,7 +89,7 @@ class PoemGenerator(nn.Module):
         # save the output
         output_list = []
 
-        start = autograd.Variable(torch.LongTensor([helper.word2id['<START>']])).view(1, -1)
+        start = autograd.Variable(torch.LongTensor([helper.word2id['<START>']]), volatile=True).view(1, -1)
 
         if torch.cuda.is_available():
             start = start.cuda()

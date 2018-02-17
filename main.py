@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--bidirectional', type=bool, default=True)
 parser.add_argument('--word_embedding', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=10)
+parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--dict_size', type=int, default=8293)
 parser.add_argument('--training_path', type=str, default='./data/tang.npz')
 parser.add_argument('--gpu', type=int, default=1)
@@ -88,7 +88,7 @@ for epoch in range(config.epoch):
         loss_list.append(loss)
         # backward and optimize
         optimizer.zero_grad()
-        loss.backward()
+        loss.backward(retain_graph=True)
         optimizer.step()
 
         if step % args.print_step == 0:
