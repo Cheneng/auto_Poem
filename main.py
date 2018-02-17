@@ -10,9 +10,8 @@ from config import Config
 from data import PoemDataset
 import argparse
 import pickle
-import copy
 
-torch.manual_seed(123)
+torch.manual_seed(113)
 
 # 显存泄露的时候使用下面语句（PyTorch中LSTM的祖传BUG）
 #torch.backends.cudnn.enabled = False
@@ -70,11 +69,11 @@ for epoch in range(config.epoch):
 
         # Training data & Labels
         if torch.cuda.is_available():
-            train_set = copy.deepcopy(x[:, :-1].cuda())
-            labels = copy.deepcopy(x[:, 1:].contiguous().view(-1).cuda())
+            train_set = x[:, :-1].cuda()
+            labels = x[:, 1:].contiguous().view(-1).cuda()
         else:
-            train_set = copy.deepcopy(x[:, :-1])
-            labels = copy.deepcopy(x[:, 1:].contiguous().view(-1))
+            train_set = x[:, :-1]
+            labels = x[:, 1:].contiguous().view(-1)
 
         train_set = autograd.Variable(train_set)
         labels = autograd.Variable(labels)
