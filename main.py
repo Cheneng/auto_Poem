@@ -19,6 +19,7 @@ torch.manual_seed(123)
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--bidirectional', type=bool, default=True)
 parser.add_argument('--word_embedding', type=int, default=100)
 parser.add_argument('--batch_size', type=int, default=10)
 parser.add_argument('--dict_size', type=int, default=8293)
@@ -36,7 +37,7 @@ args = parser.parse_args()
 config = Config(word_embedding=args.word_embedding,
                 dict_size=args.dict_size,
                 batch_first=True,
-                bidirectional=True,
+                bidirectional=args.bidirectional,
                 training_path=args.training_path,
                 batch_size=args.batch_size,
                 cuda=args.gpu,
@@ -46,7 +47,8 @@ config = Config(word_embedding=args.word_embedding,
 model = PoemGenerator(dict_size=config.dict_size,
                       word_embedding=config.word_embedding,
                       batch_first=True,
-                      rnn=config.rnn)
+                      rnn=config.rnn,
+                      bidirectional=config.bidirectional)
 
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
