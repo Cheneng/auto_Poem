@@ -49,17 +49,20 @@ model = PoemGenerator(dict_size=config.dict_size,
                       rnn=config.rnn,
                       bidirectional=config.bidirectional)
 
+criterion = nn.CrossEntropyLoss()
+
 if torch.cuda.is_available():
     torch.cuda.set_device(config.cuda)
     Data = PoemDataset(config.training_path)
-    model = model.cuda()
+    model.cuda()
+    criterion.cuda()
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True, pin_memory=True)
 
 else:
     Data = PoemDataset(config.training_path)
     DataIter = data.DataLoader(dataset=Data, batch_size=config.batch_size, shuffle=True)
 
-criterion = nn.CrossEntropyLoss()
+
 optimizer = optim.Adam(model.parameters(), lr=config.lr)
 
 loss_list = []
