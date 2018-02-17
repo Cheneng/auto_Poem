@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--bidirectional', type=bool, default=True)
 parser.add_argument('--word_embedding', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--batch_size', type=int, default=2)
 parser.add_argument('--dict_size', type=int, default=8293)
 parser.add_argument('--training_path', type=str, default='./data/tang.npz')
 parser.add_argument('--gpu', type=int, default=1)
@@ -70,6 +70,7 @@ loss_list = []
 for epoch in range(config.epoch):
     for step, x in enumerate(DataIter):
 
+        x = x.contiguous()
         # Training data & Labels
         if torch.cuda.is_available():
             train_set = x[:, :-1].cuda()
@@ -85,7 +86,7 @@ for epoch in range(config.epoch):
         out = out.view(-1, config.dict_size)
 
         loss = criterion(out, labels)
-        loss_list.append(loss)
+#        loss_list.append(loss)
         # backward and optimize
         optimizer.zero_grad()
         loss.backward()
@@ -95,7 +96,7 @@ for epoch in range(config.epoch):
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
             print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
 
-    torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
+#    torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
 
     with open('data/loss.pkl', 'wb') as f:
         pickle.dump(loss_list, f)

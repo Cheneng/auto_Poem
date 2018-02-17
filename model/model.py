@@ -113,16 +113,26 @@ class PoemGenerator(nn.Module):
 
                 out, hidden = self._generating_word_hidden(out, hidden)
 
-                _, word_index = out.max(2)
-                out = word_index
+                #_, word_index = out.max(2)
 
-                # to integer version
-                if torch.cuda.is_available():
-                    word_index = word_index.data.view(-1).cpu().numpy().tolist()
-                else:
-                    word_index = word_index.data.view(-1).numpy().tolist()
+                num_list = out.data.numpy().squeeze().tolist()
 
-                output_list_temp.extend(word_index)
+                sort_out = sorted(num_list, reverse=True)
+                #print(sort_out)
+
+                i = 0
+                while num_list.index(sort_out[i]) in output_list_temp:
+                    i += 1
+
+                word_index = num_list.index(sort_out[i])
+
+                output_list_temp.append(word_index)
+
+                # # to integer version
+                # if torch.cuda.is_available():
+                #     word_index = word_index.data.view(-1).cpu().numpy().tolist()
+                # else:
+                #     word_index = word_index.data.view(-1).numpy().tolist()
 
             output_list.append(output_list_temp)
 
