@@ -11,7 +11,7 @@ from data import PoemDataset
 import argparse
 import pickle
 
-torch.manual_seed(113)
+torch.manual_seed(11)
 
 # 显存泄露的时候使用下面语句（PyTorch中LSTM的祖传BUG）
 #torch.backends.cudnn.enabled = False
@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--bidirectional', type=bool, default=True)
 parser.add_argument('--word_embedding', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=2)
+parser.add_argument('--batch_size', type=int, default=8)
 parser.add_argument('--dict_size', type=int, default=8293)
 parser.add_argument('--training_path', type=str, default='./data/tang.npz')
 parser.add_argument('--gpu', type=int, default=1)
@@ -29,6 +29,7 @@ parser.add_argument('--epoch', type=int, default=10)
 parser.add_argument('--check_path', type=str, default='./checkpoints/')
 parser.add_argument('--print_step', type=int, default=2, help='How many step then print the loss')
 parser.add_argument('--rnn', type=str, default='LSTM')
+parser.add_argument('--num_layers', type=int, default=2)
 
 args = parser.parse_args()
 
@@ -47,7 +48,8 @@ model = PoemGenerator(dict_size=config.dict_size,
                       word_embedding=config.word_embedding,
                       batch_first=True,
                       rnn=config.rnn,
-                      bidirectional=config.bidirectional)
+                      bidirectional=config.bidirectional,
+                      num_layers=config.num_layers)
 
 criterion = nn.CrossEntropyLoss()
 
@@ -94,7 +96,7 @@ for epoch in range(config.epoch):
 
         if step % args.print_step == 0:
             print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
-            print(model.generating_acrostic_poetry('龙眼爆石墙', Data))
+            print(model.generating_acrostic_poetry('李星熠蒋桂达', Data))
 
 #    torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
 

@@ -12,7 +12,8 @@ class Config(object):
                  epoch=2,
                  cuda=1,
                  lr=0.1,
-                 rnn='LSTM'):
+                 rnn='LSTM',
+                 num_layers=2):
         self.word_embedding = word_embedding
         self.dict_size = dict_size
         self.batch_first = batch_first
@@ -23,3 +24,4 @@ class Config(object):
         self.cuda = cuda
         self.lr = lr
         self.rnn = rnn
+        self.num_layers = num_layers
