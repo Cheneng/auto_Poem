@@ -10,6 +10,7 @@ from config import Config
 from data import PoemDataset
 import argparse
 import pickle
+import visdom
 
 torch.manual_seed(11)
 
@@ -69,6 +70,13 @@ optimizer = optim.Adam(model.parameters(), lr=config.lr)
 
 loss_list = []
 
+vis = visdom.Visdom(env='poem')
+vis.text('The loss list:', win='loss', env='poem')
+vis.text(model.generating_acrostic_poetry('李星熠蒋桂达', Data), env='poem', win='loss2')
+ii = 0
+print(ii)
+vis.line(X=torch.FloatTensor([ii]), Y=torch.FloatTensor([ii]), env='poem', win='LOSS', update='append' if ii > 0 else None)
+
 for epoch in range(config.epoch):
     for step, x in enumerate(DataIter):
 
@@ -95,8 +103,12 @@ for epoch in range(config.epoch):
         optimizer.step()
 
         if step % args.print_step == 0:
-            print("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss))
-            print(model.generating_acrostic_poetry('李星熠蒋桂达', Data))
+            out = model.generating_acrostic_poetry('李星熠蒋桂达', Data)
+            print(out)
+            vis.text("[epoch %d, step %d] Loss: %.11f" % (epoch, step, loss), win='loss', env='poem', append=True)
+            vis.text(out, win='loss2', append=True)
+            vis.line(X=torch.FloatTensor([ii]), Y=loss.data, env='poem', win='LOSS', update='append' if ii != 0 else None)
+            ii += 1
 
 #    torch.save(model.state_dict(), f=args.check_path+str(epoch)+'.ckpt')
 

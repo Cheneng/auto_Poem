@@ -147,6 +147,8 @@ class PoemGenerator(nn.Module):
             line_temp = [helper.id2word[word] for word in line]
             char_version.append(''.join(line_temp))
 
+        char_version = ',\t'.join(char_version)
+
         return char_version
 
 
