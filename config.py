@@ -13,7 +13,8 @@ class Config(object):
                  cuda=1,
                  lr=0.1,
                  rnn='LSTM',
-                 num_layers=2):
+                 num_layers=2,
+                 drop_out=0.5):
         self.word_embedding = word_embedding
         self.dict_size = dict_size
         self.batch_first = batch_first
@@ -25,3 +26,4 @@ class Config(object):
         self.lr = lr
         self.rnn = rnn
         self.num_layers = num_layers
+        self.drop_out = drop_out

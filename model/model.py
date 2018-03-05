@@ -14,7 +14,7 @@ class PoemGenerator(nn.Module):
     """
     def __init__(self, word_embedding=100, dict_size=8293,
                  batch_first=True, bidirectional=True,
-                 padding_idx=8292, rnn='LSTM', num_layers=1):
+                 padding_idx=8292, rnn='LSTM', num_layers=2):
         super(PoemGenerator, self).__init__()
 
         self.input_size = word_embedding
@@ -24,6 +24,7 @@ class PoemGenerator(nn.Module):
         self.batch_first = batch_first
         self.bidirectional = bidirectional
         self.num_layers = num_layers
+        self.dropout = nn.Dropout2d(p=0.5)
 
         # Define the LSTM for generating words
         if rnn == 'LSTM':
